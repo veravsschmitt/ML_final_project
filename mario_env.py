@@ -5,7 +5,7 @@ from smb2_gym.app import InitConfig
 
 class SuperMarioEnv:
     def __init__(self):
-        config = InitConfig(level="1-3", character="luigi")
+        config = InitConfig(level="1-1", character="mario")
         self.env = SuperMarioBros2Env(
             init_config=config,
             render_mode="human",
@@ -51,12 +51,10 @@ def test_env():
     print("Reset erfolgreich!")
     print(f"State-Typ: {type(state)}, Länge: {len(state)}")
 
-    # Test 10 zufällige Schritte
-    for i in range(400):
+    # Test 1000 zufällige Schritte
+    for i in range(1000):
         action = np.random.randint(env.action_size)
-        if i > 20:  # to test what the actions are
-            action = 1
-
+    
         next_state, reward, done = env.step(action)
 
         print(f"Step {i} | Action: {action} | Reward: {reward} | Done: {done}")
@@ -68,44 +66,69 @@ def test_env():
 
     print("\nEnvironment-Test abgeschlossen!")
     
-# to do: update these actions to the right ones and to all 12
-ACTION_NOTHING = 0
-ACTION_LEFT = 1
-ACTION_RIGHT = 2
-ACTION_JUMP = 3
-ACTION_LEFT_JUMP = 4
-ACTION_RIGHT_JUMP = 5
 
-# to do: update these actions to the right ones and to all 12
+# to do: adjust keys to more sensable layout and action
+# 0 = nothing 
+# 1 = right
+# 2 = left
+# 3 = enter door
+# 4 = jump
+# 5 = nothing  
+# 6 = right + jump
+# 7 = left + jump
+# 8 = right
+# 9 = left
+# 10 = duck
+# 11 = duck + jump
+
 def get_action(keys):
-    left = keys[pygame.K_LEFT]
-    right = keys[pygame.K_RIGHT]
-    jump = keys[pygame.K_UP] or keys[pygame.K_SPACE]
+    
+    # I don't know which action is actually doing nothing, 0 is just a quess
+    ACTION_NOTHING = 0
 
-    if left and jump:
-        return ACTION_LEFT_JUMP
-    if right and jump:
-        return ACTION_RIGHT_JUMP
-    if left:
-        return ACTION_LEFT
-    if right:
-        return ACTION_RIGHT
-    if jump:
-        return ACTION_JUMP
+    if keys[pygame.K_0]:
+        return 0
+    if keys[pygame.K_1]:
+        return 1
+    if keys[pygame.K_2]:
+        return 2
+    if keys[pygame.K_3]:
+        return 3
+    if keys[pygame.K_4]:
+        return 4
+    if keys[pygame.K_5]:
+        return 5
+    if keys[pygame.K_6]:
+        return 6
+    if keys[pygame.K_7]:
+        return 7
+    if keys[pygame.K_8]:
+        return 8
+    if keys[pygame.K_9]:
+        return 9
+    if keys[pygame.K_a]:
+        return 10
+    if keys[pygame.K_s]:
+        return 11
+    
     
     return ACTION_NOTHING
 
 
 def play_mario():
     # Mario enviroment
-    config = InitConfig(level="1-1", character="luigi")
-    env = SuperMarioBros2Env()
+    config = InitConfig(level="1-1", character="mario")
+    env = SuperMarioBros2Env(
+            init_config=config,
+            render_mode="human",
+            action_type="simple"
+        )
 
     obs, info = env.reset()
 
     # initialize pygame
     pygame.init()
-    pygame.display.set_caption("Super Mario Bros 2 – Spielbar")
+    pygame.display.set_caption("Super Mario Bros 2 – playable")
 
     running = True
     clock = pygame.time.Clock()

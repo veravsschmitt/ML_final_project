@@ -11,16 +11,18 @@ license: MIT
 action space size with "simpel mode" = 12
 
 through trying (didn't find this info in documentation):
-1 = falls right
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
+
+0 = nothing 
+1 = right
+2 = left
+3 = enter door
+4 = jump
+5 = nothing  
+6 = right + jump
+7 = left + jump
+8 = right
+9 = left
+10 = duck
+11 = duck + jump
+
 

@@ -1,4 +1,6 @@
 # copied from topics in cs project
+# i didn't have a look at this one yet
+# just in here for inspiration for how we could do our analyzing of the metrics
 
 import os
 import json
