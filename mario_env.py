@@ -5,12 +5,6 @@ from smb2_gym.app import InitConfig
 
 class SuperMarioEnv:
     def __init__(self, rendering):
-        config = InitConfig(level="1-2", character="mario")
-        self.env = SuperMarioBros2Env(
-            init_config=config,
-            render_mode="human" if rendering else None,
-            action_type="simple"
-        )
         self.done = False
         self.rendering = rendering
         self.state = self.reset() 
@@ -20,11 +14,18 @@ class SuperMarioEnv:
 
     
     def reset(self):
+        config = InitConfig(level="1-2", character="mario")
+        self.env = SuperMarioBros2Env(
+            init_config=config,
+            render_mode="human" if self.rendering else None,
+            action_type="simple"
+        )
         obs, info = self.env.reset()
         self.info = info
         state = self.obs_to_state_vector(obs) 
         if self.rendering == True:
             self.env.render()
+        self.done = False
         return state
         # returns state after reset
     
@@ -208,7 +209,7 @@ def parse_level(lvl):
     return (0, 0)
 
 # to test enviroment:
-test_env()
+# test_env()
     
 # to play mario: 
 # play_mario()
