@@ -104,17 +104,12 @@ class DQNAgent:
 
 
     # loads the trained model (loading of learned weights, no gradient calculations anymore, ...) from the file filename
-    def load(self, filename):
-
-        # Look in models/ directory by default (if path is not absolute)
-        path = filename
-        if not os.path.isabs(filename):
-            path = os.path.join("models", filename)
+    def load(self, file_path):
 
         # load the saved weigths from training into the current model
-        self.model.load_state_dict(torch.load(path))
+        self.model.load_state_dict(torch.load(file_path))
 
         # set the model to evaluating mode 
         self.model.eval()
         
-        print(f"Loaded model weights from {path}")
+        print(f"Loaded model weights from {file_path}")

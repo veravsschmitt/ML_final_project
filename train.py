@@ -47,8 +47,10 @@ class KeyboardController:
         return self.should_exit
 
 # if there is at least one model already in the model folder, get the latest one
-def get_latest_model_path(models_dir):
-    model_files = glob.glob(os.path.join(models_dir, "model_*.pth"))
+def get_latest_model_path(models_dir, agent_type):
+    pattern = os.path.join(models_dir, f"model_{agent_type}_*.pth")
+    model_files = glob.glob(pattern)
+    
     if not model_files:
         return None
     model_files.sort()  # Lexicographical sort works for timestamps
@@ -66,25 +68,23 @@ def train(agentType, rendering):
         pass
     else: 
         agent = DQNAgent(env.state_size, env.action_size)
-
-    # currently just placeholder for a version with different personas
-    # Ensure models directory exists
-    persona = "survival" 
-    models_dir = os.path.join("models", persona)
+ 
+    models_dir = "models"
     os.makedirs(models_dir, exist_ok=True)
 
 
     # Load latest model if available
-    latest_model = get_latest_model_path(models_dir)
+    latest_model = get_latest_model_path(models_dir, agentType)
     if latest_model:
         agent.load(latest_model)
         # Load epsilon
-        meta_path = latest_model.replace("model_", "meta_").replace(".pth", ".json")
+        meta_path = latest_model.replace("model_{agentType}_", "meta_{agentType}_").replace(".pth", ".json")
         if os.path.exists(meta_path):
             with open(meta_path, "r") as f:
                 meta = json.load(f)
                 agent.epsilon = meta.get("epsilon", 1.0)
-            print(f"Epsilon loaded: {agent.epsilon}")
+            print(f"Epsilon loaded for {agentType}: {agent.epsilon}")
+
 
     # to do: set constants for nicer manipulation of episodes batch size and so on 
     controller = KeyboardController()
@@ -149,11 +149,11 @@ def train(agentType, rendering):
                 
                 # save model 
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                model_path = os.path.join(models_dir, f"model_{timestamp}.pth")
+                model_path = os.path.join(models_dir, f"model_{agentType}_{timestamp}.pth")
                 torch.save(agent.model.state_dict(), model_path)
 
                 # save epsilon value as meta data
-                meta_path = os.path.join(models_dir, f"meta_{timestamp}.json")
+                meta_path = os.path.join(models_dir, f"meta_{agentType}_{timestamp}.json")
                 with open(meta_path, "w") as f:
                     json.dump({"epsilon": agent.epsilon}, f)
 
@@ -161,7 +161,7 @@ def train(agentType, rendering):
                 with open(metrics_path, "w") as f:
                     json.dump(convert_to_jsonable(metrics), f, indent=4)
                     
-                print(f"Model and epsilon saved: {model_path}")
+                print(f"Model and epsilon saved for {agentType}: {model_path}")
     except KeyboardInterrupt:
         print("\n[INTERRUPT] Ctrl+C detected — saving current progress...")
 
@@ -169,10 +169,10 @@ def train(agentType, rendering):
         # Final save on exit
         agent.update_target_model()
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        model_path = os.path.join(models_dir, f"model_{timestamp}.pth")
+        model_path = os.path.join(models_dir, f"model_{agentType}_{timestamp}.pth")
         torch.save(agent.model.state_dict(), model_path)
 
-        meta_path = os.path.join(models_dir, f"meta_{timestamp}.json")
+        meta_path = os.path.join(models_dir, f"meta_{agentType}_{timestamp}.json")
         with open(meta_path, "w") as f:
             json.dump({"epsilon": agent.epsilon}, f)
 
