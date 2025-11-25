@@ -5,7 +5,7 @@ from smb2_gym.app import InitConfig
 
 class SuperMarioEnv:
     def __init__(self, rendering):
-        config = InitConfig(level="1-1", character="mario")
+        config = InitConfig(level="1-2", character="mario")
         self.env = SuperMarioBros2Env(
             init_config=config,
             render_mode="human" if rendering else None,
@@ -46,7 +46,7 @@ class SuperMarioEnv:
     
     
 def test_env():
-    env = SuperMarioEnv()
+    env = SuperMarioEnv(True)
 
     print("Environment erfolgreich initialisiert!")
     print(f"Action Space Size: {env.action_size}")
@@ -204,4 +204,4 @@ def parse_level(lvl):
 # test_env()
     
 # to play mario: 
-play_mario()
+# play_mario()
