@@ -176,10 +176,17 @@ def play_mario():
 def get_reward(old_info, new_info):
         
     reward = 0
-    reward += (old_info['pc'].lives - new_info['pc'].lives) * (-10)        # minus points for losing lives
-    reward += (old_info['pc'].hearts - new_info['pc'].hearts) * (-5)       # minus points for losing hearts
-    reward += (old_info['pc'].cherries - new_info['pc'].cherries) * (-3)   # plus points for collecting cherries
-    reward += (old_info['pos'].x_global - new_info['pos'].x_global) * (-1) # plus points for each pixel more to the right (end of the level)
+        
+    reward += new_info['pc'].hearts * (5)       # plus points for hearts
+    reward += new_info['pc'].cherries * (3)   # plus points for collecting cherries
+    
+    # Hint: Please have also a look on this one. I am not to sure why it is not giving rewards for going right (I feel like its always giving 10 points here)
+    reward += (old_info['pos'].x_global - new_info['pos'].x_global) * (10)      # plus points for each pixel more to the right (end of the level)
+    
+    
+    # minus points for losing lives
+    if new_info.get('life_lost'):
+        reward -= 100
     
     (old_world, old_level) = parse_level(old_info['game'].level)
     (new_world, new_level) = parse_level(new_info['game'].level)
@@ -187,7 +194,7 @@ def get_reward(old_info, new_info):
     reward += (old_level - new_level) * (-20)    # plus points for finishing a level
     reward += (old_world - new_world) * (-200)   # plus points for finishing a world (! high enough to counter the minus points from "losing" teh levels)
     
-    if old_info['game'].is_game_over == False:
+    if new_info['game'].is_game_over == False:
         reward += 0.5     # small satying alive bonus
     else: 
         reward -= 50
@@ -201,7 +208,7 @@ def parse_level(lvl):
     return (0, 0)
 
 # to test enviroment:
-# test_env()
+test_env()
     
 # to play mario: 
 # play_mario()
