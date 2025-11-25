@@ -4,31 +4,35 @@ from smb2_gym import SuperMarioBros2Env
 from smb2_gym.app import InitConfig
 
 class SuperMarioEnv:
-    def __init__(self):
+    def __init__(self, rendering):
         config = InitConfig(level="1-1", character="mario")
         self.env = SuperMarioBros2Env(
             init_config=config,
-            render_mode="human",
+            render_mode="human" if rendering else None,
             action_type="simple"
         )
         self.done = False
+        self.rendering = rendering
         self.state = self.reset() 
         self.action_size = self.env.action_space.n
         self.obs_shape = self.env.observation_space.shape
         self.state_size = np.prod(self.obs_shape)
         
         
+        
     def reset(self):
         obs, info = self.env.reset()
         state = self.obs_to_state_vector(obs) 
-        self.env.render()
+        if self.rendering == True:
+            self.env.render()
         return state
         # returns state after reset
     
     def step(self, action_index):
         obs, build_in_reward, self.done, truncated, info = self.env.step(action_index)
         reward = build_in_reward
-        self.env.render()
+        if self.rendering == True:
+            self.env.render()
         next_state = self.obs_to_state_vector(obs)
         self.state = next_state
         print(f"action: {action_index}, reward: {reward}") # to debug and see whats going on 

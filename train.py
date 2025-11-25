@@ -55,9 +55,9 @@ def get_latest_model_path(models_dir):
     return model_files[-1]
 
 # accepted inputs for agentType:  DQN or PPO  (default for invalid values is DQN)
-def train(agentType):
+def train(agentType, rendering):
 
-    env = SuperMarioEnv()
+    env = SuperMarioEnv(rendering)
 
     if agentType == "DQN":
         agent = DQNAgent(env.state_size, env.action_size)
@@ -185,8 +185,18 @@ if __name__ == "__main__":
     
     agentType = input("Which agent would you like to train? (DQN / PPO) DQN will be trained if input invalid: ").strip().upper()
     # DQN right now, PPO needs to be added
-    if (agentType == "DQN") :
-        train("DQN")
+    
+    rendering = input("Would you like to render while training? (YES / NO) rendering will be enabled if input invalid: ").strip().upper()
+    
+    if agentType == "DQN" and rendering == "YES":
+        train("DQN", True)
+        
+    elif agentType == "DQN" and rendering == "NO":
+        train("DQN", False)
+    
+    elif (agentType == "PPQ") :
+        pass   
+        
     else:
-        train("DQN")
+        train("DQN", True)
         
