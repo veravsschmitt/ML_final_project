@@ -73,52 +73,58 @@ def test_env():
     print("\nEnvironment-Test abgeschlossen!")
     
 
-# to do: adjust keys to more sensable layout and action
-# 0 = nothing 
-# 1 = right
-# 2 = left
-# 3 = enter door
-# 4 = jump
-# 5 = nothing  
-# 6 = right + jump
-# 7 = left + jump
-# 8 = right
-# 9 = left
-# 10 = duck
-# 11 = duck + jump
-
 def get_action(keys):
     
-    # I don't know which action is actually doing nothing, 0 is just a quess
-    ACTION_NOTHING = 0
+    # Action mapping (discovered through trying):
+    #
+    # 0: Nothing
+    # 1: Right
+    # 2: Left
+    # 3: Up (Enter door)
+    # 4: A Button (Jump)
+    # 5: B Button (Pickup/Throw)
+    # 6: Right + A
+    # 7: Left + A
+    # 8: Right + B
+    # 9: Left + B
+    # 10: Down (Duck)
+    # 11: Down + A
 
-    if keys[pygame.K_0]:
-        return 0
-    if keys[pygame.K_1]:
-        return 1
-    if keys[pygame.K_2]:
-        return 2
-    if keys[pygame.K_3]:
-        return 3
-    if keys[pygame.K_4]:
-        return 4
-    if keys[pygame.K_5]:
-        return 5
-    if keys[pygame.K_6]:
+    # Directional keys
+    right = keys[pygame.K_RIGHT]
+    left = keys[pygame.K_LEFT]
+    up = keys[pygame.K_UP]
+    down = keys[pygame.K_DOWN]
+
+    # Action buttons
+    jump = keys[pygame.K_a]      # A Button
+    pickup = keys[pygame.K_s]    # B Button
+
+    # Check combinations
+    if right and jump:
         return 6
-    if keys[pygame.K_7]:
+    if left and jump:
         return 7
-    if keys[pygame.K_8]:
+    if right and pickup:
         return 8
-    if keys[pygame.K_9]:
+    if left and pickup:
         return 9
-    if keys[pygame.K_a]:
-        return 10
-    if keys[pygame.K_s]:
+    if down and jump:
         return 11
-    
-    
-    return ACTION_NOTHING
+    if down:
+        return 10
+    if up:
+        return 3
+    if jump:
+        return 4
+    if pickup:
+        return 5
+    if right:
+        return 1
+    if left:
+        return 2
+
+    return 0 # nothing action
 
 
 def play_mario():
@@ -198,4 +204,4 @@ def parse_level(lvl):
 # test_env()
     
 # to play mario: 
-# play_mario()
+play_mario()

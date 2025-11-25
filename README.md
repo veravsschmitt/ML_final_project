@@ -12,17 +12,17 @@ action space size with "simpel mode" = 12
 
 through trying (didn't find this info in documentation):
 
-0 = nothing 
-1 = right
-2 = left
-3 = enter door
-4 = jump
-5 = nothing  
-6 = right + jump
-7 = left + jump
-8 = right
-9 = left
-10 = duck
-11 = duck + jump
+0: Nothing
+1: Right
+2: Left
+3: Up (which enters the door)
+4: A Button (Jump)
+5: B Button (Pickup/Throw)
+6: Right + A
+7: Left + A
+8: Right + B
+9: Left + B
+10: Down (Duck)
+11: Down + A
 
 
