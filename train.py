@@ -131,14 +131,13 @@ def train(agentType, rendering):
             # appending the data
             metrics.append({
                 "episode": ep + 1,
-                "persona": persona,
                 "total_reward": total_reward,
+                "level_reached": env.get_ep_level(),
+                "world:": env.get_ep_world(),
                 "epsilon": round(agent.epsilon, 4),
-                "time_alive": env.episode_stats.get("time_alive", 0),
-                "troops_deployed": env.episode_stats.get("troops_deployed", 0),
-                "average_elixir": env.episode_stats.get("average_elixir", 0),
-                "actions_taken": env.episode_stats.get("actions_taken", 0),
-                "rank": env.episode_stats.get("rank", "unknown"),
+                "time_alive": env.get_ep_total_time(),
+                "x_global_reached": env.get_ep_stats_xglobal_reached(),
+                "actions_taken": env.get_ep_stats_actions_taken(),
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             })
 

@@ -1,7 +1,9 @@
+import time
 import numpy as np
 import pygame
 from smb2_gym import SuperMarioBros2Env
 from smb2_gym.app import InitConfig
+
 
 class SuperMarioEnv:
     def __init__(self, rendering):
@@ -20,25 +22,68 @@ class SuperMarioEnv:
             render_mode="human" if self.rendering else None,
             action_type="simple"
         )
+        
+        # Game Metrics Tracked
+        self.ep_stats_starttime = time.time()
+        self.ep_stats_actions_taken = 0 
+        self.ep_xglobal_reached = 0
+          
+          
+        
         obs, info = self.env.reset()
-        self.info = info
+        self.info_x_global = info['pos'].x_global
+        (world, level) = parse_level(info['game'].level)
+        self.info_level = level
+        self.info_world = world
+        
+        self.info_hearts = info['pc'].hearts
+        self.info_cherries = info['pc'].cherries
+        
+        
         state = self.obs_to_state_vector(obs) 
         if self.rendering == True:
             self.env.render()
         self.done = False
         return state
-        # returns state after reset
+        # returns state after passreset
     
     def step(self, action_index):
         obs, build_in_reward, self.done, truncated, next_info = self.env.step(action_index)
-        reward = get_reward(self.info, next_info)
+        reward = get_reward(self.info_x_global, self.info_level, self.info_world, self.info_hearts, self.info_cherries, next_info)
+        if self.done == True:
+            end_time = time.time()
+            self.ep_stats_total_time = end_time - self.ep_stats_starttime
         if self.rendering == True:
             self.env.render()
         next_state = self.obs_to_state_vector(obs)
         self.state = next_state
-        self.info = next_info
+        
+        self.info_x_global = next_info['pos'].x_global
+        (world, level) = parse_level(next_info['game'].level)
+        self.info_level = level
+        self.info_world = world
+        self.info_hearts = next_info['pc'].hearts
+        self.info_cherries = next_info['pc'].cherries
+        
+        self.ep_stats_actions_taken += 1
+        self.ep_xglobal_reached = max(self.ep_xglobal_reached, next_info['pos'].x_global)
         print(f"action: {action_index}, reward: {reward}") # to debug and see whats going on 
         return next_state, reward, self.done
+    
+    def get_ep_stats_actions_taken(self):
+        return self.ep_stats_actions_taken
+    
+    def get_ep_stats_xglobal_reached(self):
+        return self.ep_xglobal_reached
+    
+    def get_ep_total_time(self):
+        return self.ep_stats_total_time
+    
+    def get_ep_level(self):
+        return self.info_level
+    
+    def get_ep_world(self):
+        return self.info_world
     
     # flattens the 3 dimensional input from the image in a 1 dimensional vector also normalized from 0 to 255 to 0 to 1
     def obs_to_state_vector(self, obs):
@@ -174,26 +219,27 @@ def play_mario():
     pygame.quit()
     
 
-def get_reward(old_info, new_info):
-        
+def get_reward(x_global, level, world, hearts, cherries, new_info):
+    
+    print("x_global:")
+    print(x_global)    
     reward = 0
         
-    reward += new_info['pc'].hearts * (5)       # plus points for hearts
-    reward += new_info['pc'].cherries * (3)   # plus points for collecting cherries
-    
-    # Hint: Please have also a look on this one. I am not to sure why it is not giving rewards for going right (I feel like its always giving 10 points here)
-    reward += (old_info['pos'].x_global - new_info['pos'].x_global) * (10)      # plus points for each pixel more to the right (end of the level)
+    reward += (new_info['pc'].hearts - hearts)* (-5)       # plus points for hearts
+    reward += (new_info['pc'].cherries - cherries) * (3)   # plus points for collecting cherries
+
+    reward += (new_info['pos'].x_global - x_global) * (10)      # plus points for each pixel more to the right (end of the level)
     
     
     # minus points for losing lives
     if new_info.get('life_lost'):
         reward -= 100
-    
-    (old_world, old_level) = parse_level(old_info['game'].level)
+   
     (new_world, new_level) = parse_level(new_info['game'].level)
     
-    reward += (old_level - new_level) * (-20)    # plus points for finishing a level
-    reward += (old_world - new_world) * (-200)   # plus points for finishing a world (! high enough to counter the minus points from "losing" teh levels)
+    reward += (level - new_level) * (-20)    # plus points for finishing a level
+    reward += (world - new_world) * (-200)   # plus points for finishing a world (! high enough to counter the minus points from "losing" teh levels)
+    
     
     if new_info['game'].is_game_over == False:
         reward += 0.5     # small satying alive bonus
