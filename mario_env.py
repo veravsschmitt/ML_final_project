@@ -94,14 +94,14 @@ class SuperMarioEnv:
 def test_env():
     env = SuperMarioEnv(True)
 
-    print("Environment erfolgreich initialisiert!")
+    print("Environment installed!")
     print(f"Action Space Size: {env.action_size}")
-    print(f"Observation Shape (flach): {env.state_size}\n")
+    print(f"Observation Shape (flattened): {env.state_size}\n")
 
     # Test reset
     state = env.reset()
-    print("Reset erfolgreich!")
-    print(f"State-Typ: {type(state)}, Länge: {len(state)}")
+    print("Reset successful")
+    print(f"State-Typ: {type(state)}, Length: {len(state)}")
 
     # Test 1000 zufällige Schritte
     for i in range(1000):
@@ -116,7 +116,7 @@ def test_env():
             env.reset()
             break
 
-    print("\nEnvironment-Test abgeschlossen!")
+    print("\nEnvironment-Test completed")
     
 
 def get_action(keys):
@@ -221,30 +221,44 @@ def play_mario():
 
 def get_reward(x_global, level, world, hearts, cherries, new_info):
     
-    print("x_global:")
-    print(x_global)    
     reward = 0
-        
-    reward += (new_info['pc'].hearts - hearts)* (-5)       # plus points for hearts
-    reward += (new_info['pc'].cherries - cherries) * (3)   # plus points for collecting cherries
 
-    reward += (new_info['pos'].x_global - x_global) * (10)      # plus points for each pixel more to the right (end of the level)
+
+
+    reward += (new_info['pc'].hearts - hearts)* (50)       # plus points for hearts
+    print(f"+ hearts:{reward}")
+    reward += (new_info['pc'].cherries - cherries) * (3)   # plus points for collecting cherries
+    print(f"+ cherries:{reward}")
     
-    
-    # minus points for losing lives
-    if new_info.get('life_lost'):
-        reward -= 100
+
    
     (new_world, new_level) = parse_level(new_info['game'].level)
     
     reward += (level - new_level) * (-20)    # plus points for finishing a level
     reward += (world - new_world) * (-200)   # plus points for finishing a world (! high enough to counter the minus points from "losing" teh levels)
-    
-    
+    print(f"+ level + world:{reward}")
+
+    # minus points for losing lives
+    if new_info.get('life_lost'):
+        reward -= 100
+        print(f"+ lifelost:{reward}")
+    else:
+        if level == new_level:
+            if world == new_world: 
+                global_x_reward= (new_info['pos'].x_global - x_global) * (10) # plus points for each pixel more to the right (end of the level)
+                if abs(global_x_reward) < 100:
+                    reward += global_x_reward
+                else:
+                    print("global x difference to big")
+
+                print(f"+ no live loss x:{reward}")
+
     if new_info['game'].is_game_over == False:
         reward += 0.5     # small satying alive bonus
     else: 
         reward -= 50
+
+    print(f"+ stayalive/gameover:{reward}")
             
     return reward
 

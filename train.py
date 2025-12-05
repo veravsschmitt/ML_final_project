@@ -92,7 +92,7 @@ def train(agentType, rendering):
     batch_size = 32
 
     # data tracking
-    metrics_path = os.path.join(models_dir, "training_metrics.json")
+    metrics_path = os.path.join(models_dir, f"training_{agentType}_metrics.json")
     if os.path.exists(metrics_path):
         try:
             with open(metrics_path, "r") as f:
