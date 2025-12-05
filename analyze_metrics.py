@@ -1,6 +1,5 @@
-# copied from topics in cs project
-# i didn't have a look at this one yet
-# just in here for inspiration for how we could do our analyzing of the metrics
+# base from the Merge-Tactics-AI project mentioned in the README
+# this file was then adjusted and extended for this project
 
 import os
 import json

@@ -1,5 +1,4 @@
-# Implementation of a Deep-Q-Learning agent
-# base copied from topics in cs project, based on https://github.com/krazyness/CRBot-public/blob/main/env.py
+# Implementation of a Deep-Q-Learning agent using a network with two Conv Layers and two Linear layers
 
 import os
 import torch
