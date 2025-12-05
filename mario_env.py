@@ -6,13 +6,20 @@ from smb2_gym.app import InitConfig
 
 
 class SuperMarioEnv:
-    def __init__(self, rendering):
+    def __init__(self, rendering, threedim):
         self.done = False
         self.rendering = rendering
+        self.threedim = threedim
         self.state = self.reset() 
         self.action_size = self.env.action_space.n
         self.obs_shape = self.env.observation_space.shape
-        self.state_size = np.prod(self.obs_shape)
+        if self.threedim == True:
+            h, w, c = self.obs_shape
+            self.state_size = (c, h, w)
+        else:    
+            self.state_size = np.prod(self.obs_shape)
+        
+        
 
     
     def reset(self):
@@ -39,13 +46,16 @@ class SuperMarioEnv:
         self.info_hearts = info['pc'].hearts
         self.info_cherries = info['pc'].cherries
         
-        
-        state = self.obs_to_state_vector(obs) 
+        if self.threedim == True:
+            state = self.obs_to_state_vector_3D(obs)
+        else:    
+            state = self.obs_to_state_vector(obs) 
+            
         if self.rendering == True:
             self.env.render()
         self.done = False
         return state
-        # returns state after passreset
+        # returns state after reset
     
     def step(self, action_index):
         obs, build_in_reward, self.done, truncated, next_info = self.env.step(action_index)
@@ -55,7 +65,12 @@ class SuperMarioEnv:
             self.ep_stats_total_time = end_time - self.ep_stats_starttime
         if self.rendering == True:
             self.env.render()
-        next_state = self.obs_to_state_vector(obs)
+            
+        if self.threedim == True:
+            next_state = self.obs_to_state_vector_3D(obs)
+        else:    
+            next_state = self.obs_to_state_vector(obs) 
+   
         self.state = next_state
         
         self.info_x_global = next_info['pos'].x_global
@@ -88,36 +103,17 @@ class SuperMarioEnv:
     # flattens the 3 dimensional input from the image in a 1 dimensional vector also normalized from 0 to 255 to 0 to 1
     def obs_to_state_vector(self, obs):
         return obs.flatten().astype(np.float32) / 255.0
+    
+    def obs_to_state_vector_3D(self, obs):
+    
+        obs = obs.astype(np.float32) / 255.0
+
+        # PyTorch wants (C, H, W) but it comes as (H, W, C)
+        obs = np.transpose(obs, (2, 0, 1))
+
+        return obs
         
-    
-    
-def test_env():
-    env = SuperMarioEnv(True)
 
-    print("Environment installed!")
-    print(f"Action Space Size: {env.action_size}")
-    print(f"Observation Shape (flattened): {env.state_size}\n")
-
-    # Test reset
-    state = env.reset()
-    print("Reset successful")
-    print(f"State-Typ: {type(state)}, Length: {len(state)}")
-
-    # Test 1000 zufällige Schritte
-    for i in range(1000):
-        action = np.random.randint(env.action_size)
-    
-        next_state, reward, done = env.step(action)
-
-        print(f"Step {i} | Action: {action} | Reward: {reward} | Done: {done}")
-
-        if done:
-            print("Episode zu Ende – führe Reset durch.")
-            env.reset()
-            break
-
-    print("\nEnvironment-Test completed")
-    
 
 def get_action(keys):
     
@@ -267,9 +263,6 @@ def parse_level(lvl):
         w, s = lvl.split("-")
         return int(w), int(s)
     return (0, 0)
-
-# to test enviroment:
-# test_env()
     
 # to play mario: 
 # play_mario()

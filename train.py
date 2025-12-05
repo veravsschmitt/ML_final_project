@@ -7,7 +7,8 @@ import torch
 import glob
 import json
 from mario_env import SuperMarioEnv
-from agent import DQNAgent
+from agent_Linear import DQN_Linear_Agent
+from agent_Conv import DQN_Conv_Agent
 from pynput import keyboard
 from datetime import datetime
 
@@ -56,19 +57,26 @@ def get_latest_model_path(models_dir, agent_type):
     model_files.sort()  # Lexicographical sort works for timestamps
     return model_files[-1]
 
-# accepted inputs for agentType:  DQN or PPO  (default for invalid values is DQN)
+# accepted inputs for agentType:  DQN_LINEAR or DQN_CONV  (default for invalid values is DQN_LINEAR)
 def train(agentType, rendering):
 
-    env = SuperMarioEnv(rendering)
+    
 
-    if agentType == "DQN":
-        agent = DQNAgent(env.state_size, env.action_size)
-    elif agentType == "PPO":
-        # to do: implement PPO case
-        pass
+    if agentType == "DQN_LINEAR":
+        env = SuperMarioEnv(rendering, threedim=False)
+        agent = DQN_Linear_Agent(env.state_size, env.action_size)
+        
+    elif agentType == "DQN_CONV":
+        env = SuperMarioEnv(rendering, threedim=True)
+        agent = DQN_Conv_Agent(env.state_size, env.action_size)
+        
     else: 
-        agent = DQNAgent(env.state_size, env.action_size)
+        env = SuperMarioEnv(rendering, threedim=False)
+        agent = DQN_Linear_Agent(env.state_size, env.action_size)
  
+    
+    
+    
     models_dir = "models"
     os.makedirs(models_dir, exist_ok=True)
 
@@ -78,7 +86,9 @@ def train(agentType, rendering):
     if latest_model:
         agent.load(latest_model)
         # Load epsilon
-        meta_path = latest_model.replace("model_{agentType}_", "meta_{agentType}_").replace(".pth", ".json")
+        prefix = f"model_{agentType}_"
+        meta_prefix = f"meta_{agentType}_"
+        meta_path = latest_model.replace(prefix, meta_prefix).replace(".pth", ".json")
         if os.path.exists(meta_path):
             with open(meta_path, "r") as f:
                 meta = json.load(f)
@@ -182,20 +192,23 @@ def train(agentType, rendering):
 
 if __name__ == "__main__":
     
-    agentType = input("Which agent would you like to train? (DQN / PPO) DQN will be trained if input invalid: ").strip().upper()
-    # DQN right now, PPO needs to be added
+    agentType = input("Which agent would you like to train? (DQN_LINEAR / DQN_CONV) DQN_LINEAR will be trained if input invalid: ").strip().upper()
+   
     
     rendering = input("Would you like to render while training? (YES / NO) rendering will be enabled if input invalid: ").strip().upper()
     
-    if agentType == "DQN" and rendering == "YES":
-        train("DQN", True)
+    if agentType == "DQN_LINEAR" and rendering == "YES":
+        train("DQN_LINEAR", True)
         
-    elif agentType == "DQN" and rendering == "NO":
-        train("DQN", False)
+    elif agentType == "DQN_LINEAR" and rendering == "NO":
+        train("DQN_LINEAR", False)
     
-    elif (agentType == "PPQ") :
-        pass   
+    elif agentType == "DQN_CONV" and rendering == "YES":
+        train("DQN_CONV", True)
+        
+    elif agentType == "DQN_CONV" and rendering == "NO":
+        train("DQN_CONV", False)   
         
     else:
-        train("DQN", True)
+        train("DQN_LINEAR", True)
         
