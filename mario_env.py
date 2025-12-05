@@ -171,7 +171,7 @@ def get_action(keys):
 
 def play_mario():
     # Mario enviroment
-    config = InitConfig(level="1-1", character="mario")
+    config = InitConfig(level="1-2", character="mario")
     env = SuperMarioBros2Env(
             init_config=config,
             render_mode="human",
@@ -182,7 +182,7 @@ def play_mario():
 
     # initialize pygame
     pygame.init()
-    pygame.display.set_caption("Super Mario Bros 2 – playable")
+    pygame.display.set_caption("Super Mario Bros 2 ")
 
     running = True
     clock = pygame.time.Clock()
@@ -222,9 +222,9 @@ def get_reward(x_global, level, world, hearts, cherries, new_info):
 
 
     reward += (new_info['pc'].hearts - hearts)* (50)       # plus points for hearts
-    print(f"+ hearts:{reward}")
+    # print(f"+ hearts:{reward}")
     reward += (new_info['pc'].cherries - cherries) * (3)   # plus points for collecting cherries
-    print(f"+ cherries:{reward}")
+    # print(f"+ cherries:{reward}")
     
 
    
@@ -232,29 +232,29 @@ def get_reward(x_global, level, world, hearts, cherries, new_info):
     
     reward += (level - new_level) * (-20)    # plus points for finishing a level
     reward += (world - new_world) * (-200)   # plus points for finishing a world (! high enough to counter the minus points from "losing" teh levels)
-    print(f"+ level + world:{reward}")
+    # print(f"+ level + world:{reward}")
 
     # minus points for losing lives
     if new_info.get('life_lost'):
         reward -= 100
-        print(f"+ lifelost:{reward}")
+        # print(f"+ lifelost:{reward}")
     else:
         if level == new_level:
             if world == new_world: 
                 global_x_reward= (new_info['pos'].x_global - x_global) * (10) # plus points for each pixel more to the right (end of the level)
                 if abs(global_x_reward) < 100:
                     reward += global_x_reward
-                else:
-                    print("global x difference to big")
+                # else:
+                    # print("global x difference to big")
 
-                print(f"+ no live loss x:{reward}")
+                # print(f"+ no live loss x:{reward}")
 
     if new_info['game'].is_game_over == False:
         reward += 0.5     # small satying alive bonus
     else: 
         reward -= 50
 
-    print(f"+ stayalive/gameover:{reward}")
+    # print(f"+ stayalive/gameover:{reward}")
             
     return reward
 
@@ -264,5 +264,3 @@ def parse_level(lvl):
         return int(w), int(s)
     return (0, 0)
     
-# to play mario: 
-# play_mario()
