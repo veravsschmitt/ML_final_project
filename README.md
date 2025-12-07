@@ -10,7 +10,9 @@ In this case we kept the old network which was build of two linear layers with a
 As we learned how to deal with image classification in class and basically treated finding the best q-value as a classification (each action is a class, the image belongs to the class of the action which is the best to take in this scenario) we wanted to keep the 3-dimensional vector. So we now kept the 3-dimensional image vector and didn't flatten it before handing it to the network. In the network then we used two convolutional layers (with ReLu Layers in between) before the linear layers. We hoped this would improve the learning of the agent. 
 
 ## Structure
-The following diagram shows the structure we came up with to realize or project: 
+The following diagram shows the structure we came up with to realize or project:  <br>
+![](UML_diagram.png)
+
 
 ## Results
 TO DO 
