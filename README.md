@@ -1,10 +1,22 @@
 # ML_final_project
 
 ## Description
+In this project we tried to train an agent to play Super Mario Bros 2. To train the agent we used pytorch and the package smb2-gym as an enviroment to train. This package gave us the observation (what is shown on the screen), the ability to do actions live in the game and also additional information about the game state that we could use for our custom reward function. From an other project we had the idea to use Deep-Q-LEARNING (DQN) implemented with a greedy epsilon algorithm. Our idea now was to test this implementation and strategy with the orioginal network (multiple linear layers) and also with a second network where we incorporated what we learned in this course. We wanted to compare the results in training and how good it plays afterwards to see which one works better for this application. <br>
 
+**Option 1: DQN_LINEAR** <br>
+In this case we kept the old network which was build of two linear layers with a ReLu layer in between. In order the use it we flattened the obersvation values that we got (3 dimensional vectors corresponding to the image: (H, W, C)) and only gave the network the flattened 1-dimensional vector as an input. Basically here it was ignored that this values actually represented a picture and we just treated them as a 1-dim. vector of numbers. 
+
+**Option 1: DQN_CONV** <br>
+As we learned how to deal with image classification in class and basically treated finding the best q-value as a classification (each action is a class, the image belongs to the class of the action which is the best to take in this scenario) we wanted to keep the 3-dimensional vector. So we now kept the 3-dimensional image vector and didn't flatten it before handing it to the network. In the network then we used two convolutional layers (with ReLu Layers in between) before the linear layers. We hoped this would improve the learning of the agent. 
+
+## Structure
+The following diagram shows the structure we came up with to realize or project: 
+
+## Results
+TO DO 
 
 ## The Package smb2-gym
-We used the Package smb2-gym (https://pypi.org/project/smb2-gym/) to create a training enviroment for super mario bros 2. This package provided a simplified action space for mario with 12 actions to be able to have a simpler training. We counldn't find any documentation, which action is what. Based on trying it out we assumed the following meanings: <br>
+We used the Package smb2-gym (https://pypi.org/project/smb2-gym/) to create a training enviroment for super mario bros 2. This package provided a simplified action space for mario with 12 actions to be able to have a simpler training. We counldn't find any documentation, which action is what. Based on trying it out we assumed the following meanings: <br> <br>
 0: Nothing <br>
 1: Right <br>
 2: Left <br>
