@@ -1,0 +1,46 @@
+[
+    {
+        "episode": 1,
+        "total_reward": 2942.0,
+        "level_reached": 2,
+        "world:": 1,
+        "epsilon": 0.0331,
+        "time_alive": 4032.203759908676,
+        "x_global_reached": 208,
+        "actions_taken": 1165,
+        "timestamp": "2025-12-05 13:32:32"
+    },
+    {
+        "episode": 1,
+        "total_reward": 3366.699999999946,
+        "level_reached": 2,
+        "world:": 1,
+        "epsilon": 0.01,
+        "time_alive": 2235.4074425697327,
+        "x_global_reached": 364,
+        "actions_taken": 668,
+        "timestamp": "2025-12-05 14:12:49"
+    },
+    {
+        "episode": 1,
+        "total_reward": 2724.0999999999735,
+        "level_reached": 2,
+        "world:": 1,
+        "epsilon": 0.01,
+        "time_alive": 2341.201359272003,
+        "x_global_reached": 211,
+        "actions_taken": 642,
+        "timestamp": "2025-12-05 20:59:56"
+    },
+    {
+        "episode": 1,
+        "total_reward": 2754.0999999999726,
+        "level_reached": 2,
+        "world:": 1,
+        "epsilon": 0.01,
+        "time_alive": 2178.778359889984,
+        "x_global_reached": 212,
+        "actions_taken": 642,
+        "timestamp": "2025-12-06 00:00:24"
+    }
+]
