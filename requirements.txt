@@ -1,0 +1,7 @@
+numpy
+torch
+pynput
+pygame
+matplotlib
+pandas
+smb2_gym
