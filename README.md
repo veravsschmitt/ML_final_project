@@ -15,7 +15,7 @@ The following diagram shows the structure we came up with to realize or project:
 
 
 ## Results
-Both results were unfortunately not really good. Still the second version with the convolutional layers was better than the linaer one. The following images show the metrics achieved when letting the trained models play one demo episode. <br> <br>
+Both results were unfortunately not really good. Still the second version with the convolutional layers was better than the linear one. The following images show the metrics achieved when letting the trained models play one demo episode. <br> <br>
 **1: DQN_LINEAR** <br>
 ![](/results/test_episode_linear.png)
 
@@ -25,7 +25,7 @@ Both results were unfortunately not really good. Still the second version with t
  More information on what we observed and discovered, as well as some limits and ideas to improve are in our presentation video: https://youtu.be/VdfhNdcz5dw. 
 
 ## The Package smb2-gym
-We used the Package smb2-gym (https://pypi.org/project/smb2-gym/) to create a training enviroment for super mario bros 2. This package provided a simplified action space for mario with 12 actions to be able to have a simpler training. We counldn't find any documentation, which action is what. Based on trying it out we assumed the following meanings: <br> <br>
+We used the Package smb2-gym (https://pypi.org/project/smb2-gym/) to create a training enviroment for Super Mario Bros 2. This package provided a simplified action space for mario with 12 actions to be able to have a simpler training. We counldn't find any documentation explaining which action is what. Based on trying it out we assumed the following meanings: <br> <br>
 0: Nothing <br>
 1: Right <br>
 2: Left <br>
@@ -40,12 +40,12 @@ We used the Package smb2-gym (https://pypi.org/project/smb2-gym/) to create a tr
 11: Down + A <br>
 
 ## How to run 
-Thos project is a python project. All dependecies needed to run the project are listed in requirements.txt. 
+This project is a python project. All dependecies needed to run the project are listed in requirements.txt. 
 To train the models run 'python train.py'. Then you can choose which agent should be trained. To exit savely press q. It will finish the current episode, save the data and then exit. The rendering while training is optional. To load a model and let it play run 'python play.py'. Then you can choose which agent should play or if you want to play yourself. If an angent is chosen it will play 1 episode and print metrics how it did on that episode.
 
 ## Credits
 - This project is based on the idea of a project in another course ( Topics in Computer Sience). in this project we tried to train a DQN agent to play Clash Royal, but didn't reall think about the networks used and didn't compare different types. Some Files of that project were used as a base for this one (corresponding files are marked): https://github.com/adriandbf/Merge-Tactics-AI by Adrian Fudge and Vera Schmitt
-- Articel we used to understand and work with DQN: https://medium.com/@samina.amin/deep-q-learning-dqn-71c109586bae
+- Article we used to understand and work with DQN: https://medium.com/@samina.amin/deep-q-learning-dqn-71c109586bae
 
 ## Authors
 Alina Haider <br>
